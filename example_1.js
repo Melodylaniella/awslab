@@ -1,34 +1,24 @@
 var AWS = require('aws-sdk');
 AWS.config.loadFromPath('./config.json');
-var task =  function(request, callback){
-
-	var fName = request.query.fName ? request.query.fName : "missing parameter: fName";
-	var lName = request.query.lName ? request.query.lName : "missing parameter: lName";
-	callback(null, fName + " " + lName);
-}
+var ec2 = new AWS.EC2();
 
 var params = {
-  DryRun: true || false,
-  Filters: [
-    {
-      Name: 'STRING_VALUE',
-      Values: [
-        'STRING_VALUE',
-        /* more items */
-      ]
-    },
-    /* more items */
-  ],
+  DryRun: false,
   InstanceIds: [
-    'STRING_VALUE',
-    /* more items */
+    'i-0dd34149b6c9db741',
+
   ],
-  MaxResults: 0,
-  NextToken: 'STRING_VALUE'
 };
-ec2.describeInstances(params, function(err, data) {
-  if (err) console.log(err, err.stack); // an error occurred
-  else     console.log(data);           // successful response
-});
+
+var task =  function(request, callback){
+
+        var fName = request.query.fName ? request.query.fName : "missing parameter: fName";
+        var lName = request.query.lName ? request.query.lName : "missing parameter: lName";
+
+        ec2.describeInstances(params, function(err, data) {
+        	if (err) console.log(err, err.stack); // an error occurred
+       	else callback(null, fName + " " + lName+ "\n"+data);           // successful response
+        });
+}
 
 exports.lab = task
